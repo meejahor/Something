@@ -6,6 +6,7 @@ public class Player : MonoBehaviour
 {
     public Transform aimingGroup, aimingMiddle, aimingEnd;
     bool dragging = false;
+    bool launched = false;
     Vector3 dragOffset;
     Vector3 startPos;
     Rigidbody rb;
@@ -31,6 +32,7 @@ public class Player : MonoBehaviour
     }
 
 	void OnMouseDown() {
+        if (launched) return;
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		dragOffset = worldPos - transform.position;
         aimingGroup.gameObject.SetActive(true);
@@ -38,16 +40,19 @@ public class Player : MonoBehaviour
     }
 
     void OnMouseDrag() {
+        if (launched) return;
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         transform.position = worldPos - dragOffset;
         UpdateAimingCapsule();
     }
 
 	private void OnMouseUp() {
-		dragging = false;
+        if (launched) return;
+        dragging = false;
         aimingGroup.gameObject.SetActive(false);
         rb.isKinematic = false;
         Vector3 direction = startPos - transform.position;
         rb.AddForce(direction * 500);
+        launched = true;
     }
 }
