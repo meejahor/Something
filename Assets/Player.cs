@@ -10,6 +10,7 @@ public class Player : MonoBehaviour
     Vector3 dragOffset;
     Vector3 startPos;
     Rigidbody rb;
+    const float MAX_DRAG_DISTANCE = 2;
 
     void Start() {
         startPos = transform.position;
@@ -23,7 +24,7 @@ public class Player : MonoBehaviour
     void UpdateAimingCapsule() {
         aimingMiddle.position = Vector3.Lerp(transform.position, startPos, 0.5f);
         aimingEnd.position = startPos;
-        Vector3 scale = Vector3.one;
+        Vector3 scale = aimingMiddle.localScale;
         scale.y = Vector3.Distance(transform.position, startPos);
         aimingMiddle.localScale = scale;
         Vector3 offset = startPos - transform.position;
@@ -42,7 +43,12 @@ public class Player : MonoBehaviour
     void OnMouseDrag() {
         if (launched) return;
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        transform.position = worldPos - dragOffset;
+        Vector3 newPos = worldPos - dragOffset;
+        Vector3 offset = newPos - startPos;
+        if (offset.magnitude > MAX_DRAG_DISTANCE) {
+            offset = offset.normalized * MAX_DRAG_DISTANCE;
+        }
+        transform.position = startPos + offset;
         UpdateAimingCapsule();
     }
 
