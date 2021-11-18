@@ -5,20 +5,50 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public Transform aimingGroup, aimingMiddle, aimingEnd;
-    bool dragging = false;
     bool launched = false;
     Vector3 dragOffset;
     Vector3 startPos;
     Rigidbody rb;
     const float MAX_DRAG_DISTANCE = 2;
 
+    float left, right, top, bottom;
+
     void Start() {
         startPos = transform.position;
         aimingGroup.gameObject.SetActive(false);
         rb = GetComponent<Rigidbody>();
+
+        Vector3 bl = Camera.main.ViewportToWorldPoint(
+            new Vector3(0, 0, Camera.main.nearClipPlane)
+        );
+        Vector3 tr = Camera.main.ViewportToWorldPoint(
+            new Vector3(1, 1, Camera.main.nearClipPlane)
+        );
+        left = bl.x - 0.5f;
+        bottom = bl.y - 0.5f;
+        right = tr.x + 0.5f;
+        top = tr.y + 0.5f;
+        Debug.Log(left);
+        Debug.Log(right);
+        Debug.Log(top);
+        Debug.Log(bottom);
     }
 
     void Update() {
+        Vector3 pos = transform.position;
+        if (pos.x < left) PlayerLeftScreen();
+        if (pos.x > right) PlayerLeftScreen();
+        if (pos.y < bottom) PlayerLeftScreen();
+        if (pos.y > top) PlayerLeftScreen();
+    }
+
+    void PlayerLeftScreen() {
+        RemovableObject[] removables = FindObjectsOfType<RemovableObject>();
+        foreach(RemovableObject removable in removables) {
+            removable.TurnRed();
+        }
+        FindObjectOfType<Something>().TurnRed();
+        gameObject.SetActive(false);
     }
 
     void UpdateAimingCapsule() {
@@ -37,7 +67,6 @@ public class Player : MonoBehaviour
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		dragOffset = worldPos - transform.position;
         aimingGroup.gameObject.SetActive(true);
-        dragging = true;
     }
 
     void OnMouseDrag() {
@@ -54,7 +83,6 @@ public class Player : MonoBehaviour
 
 	private void OnMouseUp() {
         if (launched) return;
-        dragging = false;
         aimingGroup.gameObject.SetActive(false);
         rb.isKinematic = false;
         Vector3 direction = startPos - transform.position;

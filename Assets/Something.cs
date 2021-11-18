@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Something : MonoBehaviour
 {
-    public Material black, red;
+    public Material red, text_tryagain;
+    public Transform textQuad;
     Transform triggeredBy = null;
     bool frozen = false;
 
@@ -24,7 +26,18 @@ public class Something : MonoBehaviour
         triggeredBy.GetComponent<Rigidbody>().isKinematic = true;
         triggeredBy.GetComponent<Rigidbody>().velocity = Vector3.zero;
         triggeredBy.gameObject.GetComponent<MeshRenderer>().material = red;
+        TurnRed();
+    }
+
+    public void TurnRed() {
         GetComponent<MeshRenderer>().material = red;
+        textQuad.GetComponent<MeshRenderer>().material = text_tryagain;
         frozen = true;
+    }
+
+    private void OnMouseDown() {
+        if (!frozen) return;
+        Scene scene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(scene.name);
     }
 }
