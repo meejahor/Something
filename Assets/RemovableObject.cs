@@ -12,9 +12,9 @@ public class RemovableObject : MonoBehaviour
     void Update() {
     }
 
-    private void OnTriggerEnter(Collider other) {
-        gameObject.SetActive(false);
-    }
+	//private void OnTriggerEnter2D(Collider2D collision) {
+ //       gameObject.SetActive(false);
+ //   }
 
     private void TurnRed(Transform t) {
         t.GetComponent<MeshRenderer>().material = red;

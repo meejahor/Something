@@ -5,10 +5,10 @@ using UnityEngine.SceneManagement;
 
 public class Something : MonoBehaviour
 {
-    public Material red, text_tryagain;
-    public Transform textQuad;
+    public Material tryagain, nextlevel;
     Transform triggeredBy = null;
     bool frozen = false;
+    bool success = false;
 
     void Start() {
     }
@@ -16,28 +16,32 @@ public class Something : MonoBehaviour
     void Update() {
     }
 
-	private void OnTriggerEnter(Collider other) {
-        triggeredBy = other.transform;
+	private void OnTriggerEnter2D(Collider2D collision) {
+        triggeredBy = collision.transform;
     }
 
 	private void LateUpdate() {
         if (triggeredBy == null) return;
         if (frozen) return;
-        triggeredBy.GetComponent<Rigidbody>().isKinematic = true;
-        triggeredBy.GetComponent<Rigidbody>().velocity = Vector3.zero;
-        triggeredBy.gameObject.GetComponent<MeshRenderer>().material = red;
+        triggeredBy.GetComponent<Rigidbody2D>().isKinematic = true;
+        triggeredBy.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
+        triggeredBy.GetComponent<Player>().TurnRed();
         TurnRed();
     }
 
     public void TurnRed() {
-        GetComponent<MeshRenderer>().material = red;
-        textQuad.GetComponent<MeshRenderer>().material = text_tryagain;
+        GetComponent<MeshRenderer>().material = tryagain;
         frozen = true;
+    }
+
+    public void Success() {
+        GetComponent<MeshRenderer>().material = nextlevel;
+        frozen = true;
+        success = true;
     }
 
     private void OnMouseDown() {
         if (!frozen) return;
-        Scene scene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(scene.name);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + (success ? 1 : 0));
     }
 }
