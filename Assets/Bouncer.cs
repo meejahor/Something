@@ -9,14 +9,17 @@ public class Bouncer : MonoBehaviour
     const float POP_SCALE = 1.25f;
     const float POP_SPEED = 5;
     bool popping = false;
-    Material mat;
+    public Material mat;
     Color startColor, endColor;
     Collider2D col;
+    MeshRenderer mr;
 
     void Start() {
-        startScale = transform.localScale;
-        mat = GetComponent<MeshRenderer>().material;
+        mr = GetComponent<MeshRenderer>();
+        mat = new Material(mr.material);
+        mr.material = mat;
         startColor = endColor = mat.color;
+        startScale = transform.localScale;
         endColor.a = 0;
         col = GetComponent<Collider2D>();
     }
@@ -32,6 +35,7 @@ public class Bouncer : MonoBehaviour
     }
 
 	private void OnCollisionEnter2D(Collision2D collision) {
+        //mr.material = blue;
         Transform player = collision.collider.transform;
         Vector3 direction = player.position - transform.position;
         player.GetComponent<Rigidbody2D>().AddForce(direction * 500);

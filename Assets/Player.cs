@@ -50,7 +50,7 @@ public class Player : MonoBehaviour
         trajColor = lr.material.color;
         trajColor.a = 0;
         lr.endColor = trajColor;
-        lr.startWidth = 1;
+        lr.startWidth = 0.5f;
         lr.endWidth = 0;
         lr.useWorldSpace = false;
     }

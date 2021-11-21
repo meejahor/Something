@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: TryAgain
+  m_Name: CircleBlue
   m_Shader: {fileID: 4800000, guid: da79dded2f5474494981579c0fba3417, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
@@ -40,7 +40,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 04874947fc79e43e696767af06774e03, type: 3}
+        m_Texture: {fileID: 2800000, guid: 933b4e72859844a3c9c4eb1db7be052f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
