@@ -42,6 +42,11 @@ public class Something : MonoBehaviour
 
     private void OnMouseDown() {
         if (!frozen) return;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + (success ? 1 : 0));
+
+        if (success) {
+            FindObjectOfType<Game>().NextScene();
+        } else {
+            FindObjectOfType<Game>().ReloadScene();
+        }
     }
 }

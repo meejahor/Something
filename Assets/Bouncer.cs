@@ -11,7 +11,6 @@ public class Bouncer : MonoBehaviour
     bool popping = false;
     Material mat;
     Color startColor, endColor;
-    //Rigidbody2D rb;
     Collider2D col;
 
     void Start() {
@@ -20,7 +19,6 @@ public class Bouncer : MonoBehaviour
         startColor = endColor = mat.color;
         endColor.a = 0;
         col = GetComponent<Collider2D>();
-        //rb = GetComponent<Rigidbody2D>();
     }
 
     void Update() {

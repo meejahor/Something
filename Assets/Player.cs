@@ -7,6 +7,7 @@ public class Player : MonoBehaviour
 {
     public Transform aimingGroup, aimingMiddle, aimingEnd;
     public Material red;
+    public GameObject tryAgain;
     bool launched = false;
     Vector3 dragOffset;
     Vector3 startPos;
@@ -46,25 +47,23 @@ public class Player : MonoBehaviour
     }
 
     void PlayerLeftScreen() {
+        gameObject.SetActive(false);
         if (FindObjectsOfType<RemovableObject>().Length > 0) {
             PlayerFailed();
         } else {
-            PlayerSucceeded();
+            FindObjectOfType<Game>().PlayerSucceeded();
         }
     }
 
-	private void PlayerSucceeded() {
-        FindObjectOfType<Something>().Success();
-        gameObject.SetActive(false);
-    }
+	//private void PlayerSucceeded() {
+	//   }
 
-    private void PlayerFailed() {
-        RemovableObject[] removables = FindObjectsOfType<RemovableObject>();
-        foreach (RemovableObject removable in removables) {
-            removable.TurnRed();
-        }
-        FindObjectOfType<Something>().TurnRed();
-        gameObject.SetActive(false);
+	private void PlayerFailed() {
+		RemovableObject[] removables = FindObjectsOfType<RemovableObject>();
+		foreach (RemovableObject removable in removables) {
+			removable.TurnRed();
+		}
+        FindObjectOfType<Game>().PlayerFailed();
     }
 
     public void TurnRed() {
