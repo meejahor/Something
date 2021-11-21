@@ -20,6 +20,7 @@ public class Player : MonoBehaviour
     GameObject traj;
     LineRenderer lr;
     Color trajColor;
+    const int NUM_TRAJECTORY_STEPS = 30;
 
     float left, right, top, bottom;
 
@@ -50,9 +51,10 @@ public class Player : MonoBehaviour
         trajColor = lr.material.color;
         trajColor.a = 0;
         lr.endColor = trajColor;
-        lr.startWidth = 0.5f;
+        lr.startWidth = 1;
         lr.endWidth = 0;
         lr.useWorldSpace = false;
+        lr.textureMode = LineTextureMode.DistributePerSegment;
     }
 
     (Vector2, float, float) CalculateLaunchDirectionAndForce() {
@@ -68,17 +70,30 @@ public class Player : MonoBehaviour
 
         (Vector2 direction, float mag, float force) = CalculateLaunchDirectionAndForce();
 
-        // trajectory maths by Dan Schatzeder and other sources
+        // based on fixed-step trajectory maths by Dan Schatzeder and other sources
         // https://schatzeder.medium.com/basic-trajectory-prediction-in-unity-8537b52e1b34
 
         float velocity = force * rb.mass * Time.fixedDeltaTime;
 
 		float timeStep = mag * 0.1f;
-		for (int i = 0; i < 20; i++) {
-            Vector2 trajPos = direction * velocity * timeStep * i;
-            trajPos.y += Physics2D.gravity.y / 2 * Mathf.Pow(timeStep * i, 2);
+        timeStep /= NUM_TRAJECTORY_STEPS;
+        float time = 0;
+        float timeToAdd = timeStep * NUM_TRAJECTORY_STEPS;
+        float dist = 0;
+        Vector2 prev = Vector2.zero;
+        trajPoints.Add(prev);
+
+        for (int i = 1; i < NUM_TRAJECTORY_STEPS; i++) {
+            time += timeToAdd;
+            timeToAdd -= timeStep;
+            Vector2 trajPos = direction * velocity * time;
+            trajPos.y += Physics2D.gravity.y / 2 * Mathf.Pow(time, 2);
+			dist += Vector2.Distance(prev, trajPos);
             trajPoints.Add(trajPos);
+            prev = trajPos;
         }
+
+        lr.material.mainTextureScale = new Vector2(dist * 2, 1);
 
         lr.SetPositions(trajPoints.ToArray());
         lr.positionCount = trajPoints.Count;
