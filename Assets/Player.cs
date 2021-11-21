@@ -45,11 +45,10 @@ public class Player : MonoBehaviour
         //ghost.gameObject.SetActive(showGhost && ghostIsValid);
 
         traj = new GameObject();
-        traj.transform.position = Vector3.forward;
         lr = traj.AddComponent<LineRenderer>();
-        lr.material = trajectoryMaterial;
-        lr.startWidth = lr.endWidth = 0.1f;
-        trajColor = new Color(63, 63, 63, 0);
+		lr.material = trajectoryMaterial;
+        trajColor = lr.material.color;
+        trajColor.a = 0;
         lr.endColor = trajColor;
         lr.startWidth = 1;
         lr.endWidth = 0;
@@ -65,13 +64,17 @@ public class Player : MonoBehaviour
 
     void UpdateTrajectory() {
         List<Vector3> trajPoints = new List<Vector3>();
-        traj.transform.position = transform.position;
+        traj.transform.position = transform.position + Vector3.forward;
 
         (Vector2 direction, float mag, float force) = CalculateLaunchDirectionAndForce();
+
+        // trajectory maths by Dan Schatzeder and other sources
+        // https://schatzeder.medium.com/basic-trajectory-prediction-in-unity-8537b52e1b34
+
         float velocity = force * rb.mass * Time.fixedDeltaTime;
 
-		float timeStep = mag * 0.05f;
-		for (int i = 0; i < 40; i++) {
+		float timeStep = mag * 0.1f;
+		for (int i = 0; i < 20; i++) {
             Vector2 trajPos = direction * velocity * timeStep * i;
             trajPos.y += Physics2D.gravity.y / 2 * Mathf.Pow(timeStep * i, 2);
             trajPoints.Add(trajPos);
