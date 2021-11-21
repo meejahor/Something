@@ -18,6 +18,7 @@ public class Game : MonoBehaviour
     }
 
     public void NextScene() {
+        Player.ghostIsValid = false;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
